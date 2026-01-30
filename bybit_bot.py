@@ -749,6 +749,10 @@ def start_telegram():
 import threading
 import time
 ...
+from flask import Flask
+
+app = Flask(__name__)
+
 
 # ===== trailing thread =====
 trailing_thread = threading.Thread(
