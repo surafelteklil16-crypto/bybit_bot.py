@@ -894,6 +894,15 @@ trailing_thread = threading.Thread(
 )
 trailing_thread.start()
 
+import threading
+
+def run_bot():
+    print("🤖 Telegram bot polling started...")
+    application.run_polling()
+
+bot_thread = threading.Thread(target=run_bot)
+bot_thread.start()
+
 # ======================================================
 # PART 9 – THREADS & MAIN RUNNER
 # ======================================================
