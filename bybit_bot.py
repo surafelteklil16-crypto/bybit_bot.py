@@ -834,6 +834,66 @@ def manage_trailing():
 
         time.sleep(5)
 
+# ==============================
+# PART 8.5 – GLOBAL STATE FIXES
+# ==============================
+
+import threading
+import time
+
+# ---- Open trades container (FIX for OPEN_TRADES error)
+OPEN_TRADES = {}
+
+# Lock to avoid race conditions
+OPEN_TRADES_LOCK = threading.Lock()
+
+
+def safe_div(a, b):
+    """Prevent ZeroDivisionError"""
+    try:
+        if b == 0:
+            return 0
+        return a / b
+    except Exception:
+        return 0
+
+
+def manage_trailing():
+    """Trailing stop manager (safe version)"""
+    while True:
+        try:
+            with OPEN_TRADES_LOCK:
+                for trade_id, trade in list(OPEN_TRADES.items()):
+                    entry = trade.get("entry_price", 0)
+                    current = trade.get("current_price", 0)
+                    sl = trade.get("stop_loss", 0)
+
+                    # Safety checks
+                    if entry <= 0 or current <= 0:
+                        continue
+
+                    move = safe_div(current - entry, entry)
+
+                    # Example trailing logic (simple & safe)
+                    if move > 0.01:  # 1% profit
+                        new_sl = entry * 1.002
+                        if new_sl > sl:
+                            trade["stop_loss"] = new_sl
+
+            time.sleep(2)
+
+        except Exception as e:
+            print("Trailing error:", e)
+            time.sleep(3)
+
+
+# ---- Start trailing thread ONCE
+trailing_thread = threading.Thread(
+    target=manage_trailing,
+    daemon=True
+)
+trailing_thread.start()
+
 # ======================================================
 # PART 9 – THREADS & MAIN RUNNER
 # ======================================================
