@@ -14,6 +14,9 @@ from datetime import datetime
 from flask import Flask, request, send_from_directory
 from pybit.unified_trading import HTTP
 
+# ===== GLOBAL STATE =====
+OPEN_TRADES = {}
+
 # ======================================================
 # MODE CONFIG (DEMO / REAL)
 # ======================================================
