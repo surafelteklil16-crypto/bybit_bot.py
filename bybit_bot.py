@@ -931,6 +931,20 @@ if __name__ == "__main__":
     # ---- INIT DAY ----
     init_day()
 
+    if __name__ == "__main__":
+    import threading
+    import os
+
+    def run_bot():
+        print("🤖 Telegram bot polling started...")
+        application.run_polling()
+
+    threading.Thread(target=run_bot, daemon=True).start()
+
+    port = int(os.environ.get("PORT", 10000))
+    print(f"🌐 Flask running on port {port}")
+    app.run(host="0.0.0.0", port=port)
+
     # ---- TELEGRAM THREAD ----
     threading.Thread(
         target=start_telegram,
