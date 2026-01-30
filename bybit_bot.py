@@ -745,6 +745,31 @@ def start_telegram():
         except Exception as e:
             time.sleep(3)
 
+# ===== imports =====
+import threading
+import time
+...
+
+# ===== trailing thread =====
+trailing_thread = threading.Thread(
+    target=manage_trailing,
+    daemon=True
+)
+trailing_thread.start()
+
+# ===== telegram bot =====
+def run_bot():
+    print("🤖 Telegram bot polling started...")
+    application.run_polling()
+
+bot_thread = threading.Thread(target=run_bot, daemon=True)
+bot_thread.start()
+
+# ===== flask =====
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=10000)
+
+
       # ======================================================
 # PART 8 – MINI WEB UI (DASHBOARD)
 # ======================================================
