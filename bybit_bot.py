@@ -800,6 +800,37 @@ def api_kill():
 def start_web():
     app.run(host="0.0.0.0", port=10000)
 
+# ===============================
+# FLASK KEEP-ALIVE (RENDER)
+# ===============================
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return "🤖 Bot is running successfully!"
+
+# ===============================
+# TRAILING STOP ENGINE
+# ===============================
+def manage_trailing():
+    while True:
+        try:
+            for trade_id, trade in OPEN_TRADES.items():
+                entry = trade["entry"]
+                current_price = trade.get("price", entry)
+
+                # example trailing logic
+                if current_price > entry * 1.01:
+                    new_sl = current_price * 0.995
+                    if new_sl > trade["sl"]:
+                        trade["sl"] = new_sl
+        except Exception as e:
+            print("Trailing error:", e)
+
+        time.sleep(5)
+
 # ======================================================
 # PART 9 – THREADS & MAIN RUNNER
 # ======================================================
